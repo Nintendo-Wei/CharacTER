@@ -66,7 +66,6 @@ and yield the corresponding begin positions in both sentences as well as the
 maximal phrase length. Both sentences are represented as word lists.
 """
 def couple_discoverer(sentence_1, sentence_2):
-
     # Applying the cartesian product to traversing both sentences
     for start_1, start_2 in \
             itertools.product(range(len(sentence_1)), range(len(sentence_2))):
@@ -75,21 +74,16 @@ def couple_discoverer(sentence_1, sentence_2):
         if start_1 == start_2:
             continue
 
-        char_1 = " ".join(sentence_1[start_1])
-        char_2 = " ".join(sentence_2[start_2])
-        
-        # Set the threshold for character-level edit distance 
-        if edit_distance(char_1, char_2) < 2:
+        # If identical words are found in different positions of two sentences 
+        if sentence_1[start_1] == sentence_2[start_2]:
             length = 1
  
             # Go further to next positions of sentence_1 to learn longer phrase
             for step in range(1, len(sentence_1) - start_1):
                 end_1, end_2 = start_1 + step, start_2 + step
                 
-                # Check the character-level edit distance of the next word
-                if end_2 < len(sentence_2) and \
-                        edit_distance(" ".join(sentence_1[end_1]), \
-                        " ".join(sentence_2[end_2])) < 2:
+                # If the new detected phrase is also contained in sentence_2
+                if end_2 < len(sentence_2) and sentence_1[end_1] == sentence_2[end_2]:
                     length += 1
                 else:
                     break
